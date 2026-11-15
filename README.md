@@ -1,4 +1,4 @@
-# RK3568 V4L2 + RGA + Qt5相机
+# RK3568 V4L2 + ISP + RGA + Qt5相机
 
 这是一个运行在RK3568 Buildroot系统上的MIPI CSI相机程序。工程使用：
 
