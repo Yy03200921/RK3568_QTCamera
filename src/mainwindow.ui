@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="minimumSize">
+   <size><width>960</width><height>540</height></size>
+  </property>
+  <property name="windowTitle">
+   <string>RK3568 相机</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow, QWidget#centralWidget, QWidget#cameraPage,
+QWidget#photoPage {
+    background: #080a0d;
+    color: #f5f7fa;
+    font-family: "Noto Sans CJK SC", "Source Han Sans CN", sans-serif;
+}
+QStackedWidget#pageStack {
+    background: #080a0d;
+    border: none;
+}
+QFrame#controlPanel, QFrame#photoTopBar {
+    background: #15181d;
+}
+QFrame#controlPanel {
+    border-left: 1px solid #2a2f37;
+}
+QFrame#photoTopBar {
+    border-bottom: 1px solid #2a2f37;
+}
+QLabel#brandLabel {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 700;
+}
+QLabel#statusLabel, QLabel#previewPhotoNameLabel {
+    color: #aeb6c2;
+    font-size: 13px;
+}
+QLabel#previewLabel, QLabel#photoPreviewLabel {
+    background: #000000;
+    border: none;
+}
+QPushButton#shutterButton {
+    min-width: 96px;
+    max-width: 96px;
+    min-height: 96px;
+    max-height: 96px;
+    border-radius: 48px;
+    border: 8px solid #858d98;
+    background: #ffffff;
+}
+QPushButton#shutterButton:pressed {
+    border-color: #c9d0d8;
+    background: #d9dee4;
+}
+QPushButton#shutterButton:disabled {
+    border-color: #40464f;
+    background: #707780;
+}
+QPushButton#startStopButton, QPushButton#exitButton,
+QPushButton#backButton {
+    min-height: 54px;
+    border: 1px solid #3a414b;
+    border-radius: 6px;
+    background: #242931;
+    color: #f5f7fa;
+    font-size: 15px;
+    font-weight: 600;
+}
+QPushButton#startStopButton:pressed, QPushButton#exitButton:pressed,
+QPushButton#backButton:pressed {
+    background: #343b45;
+}
+QPushButton#thumbnailButton {
+    min-width: 144px;
+    max-width: 160px;
+    min-height: 81px;
+    max-height: 90px;
+    background: #050607;
+    border: 1px solid #3a414b;
+    border-radius: 5px;
+    color: #8e98a5;
+    font-size: 12px;
+}
+QPushButton#thumbnailButton:pressed {
+    border-color: #ffffff;
+}
+QLabel#photoNameLabel {
+    color: #8e98a5;
+    font-size: 11px;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="centralLayout">
+    <property name="spacing"><number>0</number></property>
+    <property name="leftMargin"><number>0</number></property>
+    <property name="topMargin"><number>0</number></property>
+    <property name="rightMargin"><number>0</number></property>
+    <property name="bottomMargin"><number>0</number></property>
+    <item>
+     <widget class="QStackedWidget" name="pageStack">
+      <property name="currentIndex"><number>0</number></property>
+      <widget class="QWidget" name="cameraPage">
+       <layout class="QHBoxLayout" name="rootLayout" stretch="1,0">
+        <property name="spacing"><number>0</number></property>
+        <property name="leftMargin"><number>0</number></property>
+        <property name="topMargin"><number>0</number></property>
+        <property name="rightMargin"><number>0</number></property>
+        <property name="bottomMargin"><number>0</number></property>
+        <item>
+         <widget class="QWidget" name="previewArea">
+          <layout class="QVBoxLayout" name="previewLayout">
+           <property name="spacing"><number>0</number></property>
+           <property name="leftMargin"><number>0</number></property>
+           <property name="topMargin"><number>0</number></property>
+           <property name="rightMargin"><number>0</number></property>
+           <property name="bottomMargin"><number>0</number></property>
+           <item>
+            <widget class="QLabel" name="previewLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>1</horstretch><verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size><width>640</width><height>360</height></size>
+             </property>
+             <property name="text"><string>正在连接摄像头...</string></property>
+             <property name="alignment"><set>Qt::AlignCenter</set></property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="controlPanel">
+          <property name="minimumSize">
+           <size><width>184</width><height>0</height></size>
+          </property>
+          <property name="maximumSize">
+           <size><width>230</width><height>16777215</height></size>
+          </property>
+          <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+          <layout class="QVBoxLayout" name="controlLayout">
+           <property name="spacing"><number>12</number></property>
+           <property name="leftMargin"><number>18</number></property>
+           <property name="topMargin"><number>18</number></property>
+           <property name="rightMargin"><number>18</number></property>
+           <property name="bottomMargin"><number>18</number></property>
+           <item>
+            <widget class="QLabel" name="brandLabel">
+             <property name="text"><string>RK CAMERA</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="statusLabel">
+             <property name="text"><string>正在启动摄像头...</string></property>
+             <property name="wordWrap"><bool>true</bool></property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="topSpacer">
+             <property name="orientation"><enum>Qt::Vertical</enum></property>
+             <property name="sizeHint" stdset="0">
+              <size><width>20</width><height>40</height></size>
+             </property>
+            </spacer>
+           </item>
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QPushButton" name="shutterButton">
+             <property name="toolTip"><string>拍照</string></property>
+             <property name="text"><string/></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="startStopButton">
+             <property name="text"><string>启动</string></property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="middleSpacer">
+             <property name="orientation"><enum>Qt::Vertical</enum></property>
+             <property name="sizeHint" stdset="0">
+              <size><width>20</width><height>40</height></size>
+             </property>
+            </spacer>
+           </item>
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QPushButton" name="thumbnailButton">
+             <property name="toolTip"><string>预览最近拍摄的照片</string></property>
+             <property name="text"><string>最近照片</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="photoNameLabel">
+             <property name="text"><string>尚未拍照</string></property>
+             <property name="alignment"><set>Qt::AlignCenter</set></property>
+             <property name="wordWrap"><bool>true</bool></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="exitButton">
+             <property name="text"><string>退出</string></property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="photoPage">
+       <layout class="QVBoxLayout" name="photoPageLayout">
+        <property name="spacing"><number>0</number></property>
+        <property name="leftMargin"><number>0</number></property>
+        <property name="topMargin"><number>0</number></property>
+        <property name="rightMargin"><number>0</number></property>
+        <property name="bottomMargin"><number>0</number></property>
+        <item>
+         <widget class="QFrame" name="photoTopBar">
+          <property name="minimumSize"><size><width>0</width><height>70</height></size></property>
+          <property name="maximumSize"><size><width>16777215</width><height>70</height></size></property>
+          <layout class="QHBoxLayout" name="photoTopLayout">
+           <property name="leftMargin"><number>12</number></property>
+           <property name="topMargin"><number>8</number></property>
+           <property name="rightMargin"><number>16</number></property>
+           <property name="bottomMargin"><number>8</number></property>
+           <item>
+            <widget class="QPushButton" name="backButton">
+             <property name="minimumSize"><size><width>120</width><height>54</height></size></property>
+             <property name="maximumSize"><size><width>160</width><height>54</height></size></property>
+             <property name="text"><string>返回相机</string></property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="photoTopSpacer">
+             <property name="orientation"><enum>Qt::Horizontal</enum></property>
+             <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="previewPhotoNameLabel">
+             <property name="text"><string>照片预览</string></property>
+             <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="photoPreviewLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>1</horstretch><verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text"><string>没有可预览的照片</string></property>
+          <property name="alignment"><set>Qt::AlignCenter</set></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

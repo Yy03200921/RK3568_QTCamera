@@ -1,0 +1,68 @@
+#!/bin/sh
+
+. /etc/profile 2>/dev/null || true
+
+APP="/root/rk3568_camera_qt"
+PID_FILE="/var/run/rk3568-camera.pid"
+LOG_FILE="/var/log/rk3568-camera.log"
+
+case "$1" in
+    start)
+        if [ -f "${PID_FILE}" ] && \
+           kill -0 "$(cat "${PID_FILE}")" 2>/dev/null; then
+            echo "相机程序已经运行"
+            exit 0
+        fi
+
+        if [ ! -x "${APP}" ]; then
+            echo "找不到或不可执行：${APP}"
+            exit 1
+        fi
+
+        export QT_QPA_PLATFORM=wayland
+        export RK_CAMERA_DEVICE="${RK_CAMERA_DEVICE:-/dev/video0}"
+
+        # S49weston 先启动，但 Wayland socket 的创建需要一点时间
+        # 检查 Wayland 运行目录
+        if [ -z "${XDG_RUNTIME_DIR}" ]; then
+            echo "XDG_RUNTIME_DIR 未设置，请检查 /etc/profile.d/weston.sh"
+            exit 1
+        fi
+        
+        # 等待 Weston 真正启动完成 否则无法正常加载程序
+        wait_count=0
+        while [ ! -e "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY:-wayland-0}" ]; do
+            wait_count=$((wait_count + 1))
+            if [ "${wait_count}" -ge 50 ]; then
+                echo "等待 Wayland 启动超时"
+                exit 1
+            fi
+            sleep 0.1
+        done
+
+        "${APP}" >> "${LOG_FILE}" 2>&1 &
+        echo $! > "${PID_FILE}"
+        ;;
+
+    stop)
+        if [ -f "${PID_FILE}" ]; then
+            kill "$(cat "${PID_FILE}")" 2>/dev/null
+            rm -f "${PID_FILE}"
+        fi
+        ;;
+
+    restart)
+        "$0" stop
+        sleep 0.3
+        "$0" start
+        ;;
+
+    *)
+        echo "用法：$0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
+
+# 使用Wayland需对应修改/etc/xdg/weston/weston.ini配置文件，例如屏幕旋转角度

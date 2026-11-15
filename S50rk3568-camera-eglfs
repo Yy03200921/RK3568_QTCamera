@@ -1,0 +1,70 @@
+#!/bin/sh
+
+. /etc/profile 2>/dev/null || true
+
+PATH="/usr/sbin:/usr/bin:/sbin:/bin"
+export PATH
+
+APP="/root/rk3568_camera_qt"
+PID_FILE="/var/run/rk3568-camera.pid"
+LOG_FILE="/var/log/rk3568-camera.log"
+
+write_log()
+{
+    mkdir -p "$(dirname "$LOG_FILE")"
+    printf '%s\n' "$1" >>"$LOG_FILE"
+}
+
+case "$1" in
+    start)
+        mkdir -p "$(dirname "$PID_FILE")"
+
+        if [ -f "$PID_FILE" ]; then
+            old_pid="$(cat "$PID_FILE" 2>/dev/null)"
+            if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+                write_log "rk3568_camera_qt 已在运行，PID=$old_pid"
+                exit 0
+            fi
+            rm -f "$PID_FILE"
+        fi
+
+        export QT_QPA_PLATFORM=eglfs
+        export RK_CAMERA_DEVICE="${RK_CAMERA_DEVICE:-/dev/video0}"
+        unset QT_GSTREAMER_WIDGET_VIDEOSINK
+        unset QT_GSTREAMER_WINDOW_VIDEOSINK
+
+        if [ ! -x "$APP" ]; then
+            write_log "找不到或不可执行：$APP"
+            echo "找不到或不可执行：$APP" >&2
+            exit 1
+        fi
+
+        write_log "启动 $APP，QT_QPA_PLATFORM=$QT_QPA_PLATFORM，RK_CAMERA_DEVICE=$RK_CAMERA_DEVICE，使用 Qt 默认视频 sink"
+        "$APP" >>"$LOG_FILE" 2>&1 &
+        app_pid=$!
+        echo "$app_pid" >"$PID_FILE"
+        sleep 1
+        if ! kill -0 "$app_pid" 2>/dev/null; then
+            write_log "Qt 程序启动后立即退出，PID=$app_pid"
+            rm -f "$PID_FILE"
+            exit 1
+        fi
+        write_log "Qt 程序已启动，PID=$app_pid"
+        ;;
+    stop)
+        if [ -f "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE")" 2>/dev/null || true
+            rm -f "$PID_FILE"
+        fi
+        ;;
+    restart)
+        "$0" stop
+        "$0" start
+        ;;
+    *)
+        echo "用法：$0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
